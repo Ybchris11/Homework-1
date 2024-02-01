@@ -1,0 +1,164 @@
+---
+title: "Homework#1"
+author: "Christian Lacroix"
+date: "2024-01-31"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Study Group:** Christian Lacroix(me) & Isamari Duran
+
+
+## "R Basics for Lecture 1" Code Replication:
+
+### With Some Data
+
+
+```{r}
+load("BRFSS2022_rev.RData")
+brfss22[1:10,1:6]
+```
+
+```{r message=FALSE}
+attach(brfss22)
+```
+
+```{r}
+summary(brfss22)
+```
+
+### Simple Stats
+
+```{r}
+summary(SLEPTIM1[X_STATE == "New York"])
+```
+
+```{r}
+summary(SLEPTIM1[X_STATE == "Ohio"])
+```
+
+```{r}
+mean(SLEPTIM1[X_STATE == "New York"], na.rm = TRUE)
+```
+
+```{r}
+sd(SLEPTIM1[X_STATE == "New York"], na.rm = TRUE)
+```
+
+```{r}
+mean(SLEPTIM1[X_STATE == "Ohio"], na.rm = TRUE)
+```
+
+```{r}
+sd(SLEPTIM1[X_STATE == "Ohio"], na.rm = TRUE)
+```
+
+## "R Basics for Lecture 1A" Code Replication:
+
+### Variable Coding
+
+```{r}
+hist(SLEPTIM1[(SLEPTIM1 >5) & (SLEPTIM1 < 9)])
+```
+
+```{r}
+summary(SEXVAR)
+```
+
+```{r}
+summary(BIRTHSEX)
+```
+
+```{r}
+summary(GENHLTH)
+```
+
+```{r}
+summary(EDUCA)
+```
+
+#### Packages
+
+The "tidyverse" and "plyr" packages were installed to R by entering:
+
+    install.packages("tidyverse")
+    install.packages("plyr")
+
+then
+
+```{r}
+library(plyr)
+```
+
+```{r}
+library(tidyverse)
+```
+
+#### Factors
+
+```{r}
+summary(X_AGEG5YR)
+```
+
+```{r}
+summary(INCOME3)
+```
+
+```{r}
+ddply(brfss22, .(INCOME3), summarize, mean = round(mean(SLEPTIM1, na.rm = TRUE), 2), sd = round(sd(SLEPTIM1, na.rm = TRUE), 2), n_obsv = length(is.na(SLEPTIM1) == FALSE) )
+```
+
+```{r}
+ddply(brfss22, .(INCOME3), summarize, sleep90th = quantile(SLEPTIM1,probs = 0.9, na.rm = TRUE), sleep10th = quantile(SLEPTIM1,probs = 0.1, na.rm = TRUE), n_obs = length(is.na(SLEPTIM1) == FALSE) )
+```
+
+```{r}
+table(GENHLTH,SEXVAR)
+```
+
+```{r}
+xtabs(~GENHLTH + SEXVAR)
+```
+
+```{r}
+prop.table(table(GENHLTH,SEXVAR))
+```
+
+#### Alt Versions
+
+```{r}
+mean(SLEPTIM1[(EDUCA == "College 4 years or more (College graduate)")], na.rm = TRUE)
+```
+
+
+```{r message=FALSE}
+# alternatively
+restrict1 <- as.logical(EDUCA == "College 4 years or more (College graduate)")
+dat_subset1 <- subset(brfss22, restrict1)
+
+detach()
+attach(dat_subset1)
+
+mean(SLEPTIM1, na.rm = TRUE)
+```
+
+```{r}
+detach()
+```
+
+```{r}
+mean(brfss22$SLEPTIM1, na.rm = TRUE)
+```
+
+```{r}
+mean(dat_subset1$SLEPTIM1, na.rm = TRUE)
+```
+
+## Data Reflection:
+
+  One thing I find interesting, is all the the data collect on the LGBTQ+ community. However its important to note that a significant number of respondents refused to answer or reported that they did not know the answer to some of the questions about sexual orientation and sexual identity. I believe that knowing the causes for these refusals or uncertainty is critical for determining the data's dependability. Because of this, it's crucial to be aware of potential biases, sampling methods, and the context of the survey. Researchers should look into the influence of missing data on the overall analysis. 
+
+
